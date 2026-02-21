@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screenshot Builder — PhoneTransfer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #13131a;
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f5f5f7;
+            --text-secondary: #a1a1aa;
+            --blue: #007AFF;
+            --green: #34C759;
+            --purple: #5856D6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .header a {
+            color: var(--blue);
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .toolbar {
+            padding: 1rem 2rem;
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .toolbar button {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toolbar button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .toolbar button.primary {
+            background: var(--blue);
+            border-color: var(--blue);
+        }
+
+        .toolbar button.success {
+            background: var(--green);
+            border-color: var(--green);
+            color: #000;
+        }
+
+        .slides-container {
+            display: flex;
+            gap: 1.5rem;
+            padding: 2rem;
+            overflow-x: auto;
+            align-items: flex-start;
+        }
+
+        .slide-card {
+            flex-shrink: 0;
+            width: 320px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .slide-preview {
+            position: relative;
+            width: 320px;
+            height: 570px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .slide-preview canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide-controls {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .slide-controls label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .slide-controls input[type="text"],
+        .slide-controls textarea {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+        }
+
+        .slide-controls textarea {
+            resize: none;
+            height: 40px;
+        }
+
+        .upload-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.6rem;
+            border-radius: 8px;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-btn:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+        }
+
+        .upload-btn.has-image {
+            border-color: var(--green);
+            color: var(--green);
+            border-style: solid;
+        }
+
+        .color-row {
+            display: flex;
+            gap: 0.4rem;
+        }
+
+        .color-swatch {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .color-swatch.active {
+            border-color: #fff;
+        }
+
+        .slide-number {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            padding: 0 1rem;
+            padding-top: 0.75rem;
+        }
+
+        .download-single {
+            width: 100%;
+            padding: 0.6rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: rgba(0, 122, 255, 0.1);
+            color: var(--blue);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .download-single:hover {
+            background: rgba(0, 122, 255, 0.2);
+        }
+
+        .status-bar {
+            padding: 0.75rem 2rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>📱 Screenshot Builder</h1>
+        <a href="admin.html">← Back to Admin</a>
+    </div>
+    <div class="toolbar">
+        <button onclick="downloadAll()" class="success">⬇ Download All (PNG)</button>
+        <button onclick="resetAll()">↺ Reset All</button>
+    </div>
+    <div class="slides-container" id="slidesContainer"></div>
+    <div class="status-bar" id="statusBar">Ready — upload screenshots and customize text, then download.</div>
+
+    <script>
+        const CANVAS_W = 1290;
+        const CANVAS_H = 2796;
+
+        const GRADIENTS = [
+            { name: 'Purple-Blue', colors: ['#667eea', '#764ba2'] },
+            { name: 'Blue-Cyan', colors: ['#0072ff', '#00c6ff'] },
+            { name: 'Green-Emerald', colors: ['#11998e', '#38ef7d'] },
+            { name: 'Indigo-Violet', colors: ['#4f46e5', '#7c3aed'] },
+            { name: 'Coral-Pink', colors: ['#f093fb', '#f5576c'] },
+            { name: 'Orange-Red', colors: ['#ff512f', '#f09819'] },
+            { name: 'Dark Navy', colors: ['#0f0c29', '#302b63'] },
+            { name: 'Black-Gray', colors: ['#000000', '#1a1a2e'] },
+        ];
+
+        const SLIDES = [
+            { headline: 'Switch Phones in Minutes', subtitle: 'Transfer data between Android and iPhone', gradient: 0, image: null },
+            { headline: 'Every Carrier. Every Direction.', subtitle: 'T-Mobile, AT&T, Verizon, Mint and more', gradient: 1, image: null },
+            { headline: 'Your Data Stays Private', subtitle: '100% on-device. No cloud. No tracking.', gradient: 2, image: null },
+            { headline: 'Step-by-Step Guide', subtitle: 'We walk you through everything', gradient: 3, image: null },
+            { headline: 'Port Your Number Stress-Free', subtitle: 'Carrier-specific instructions for every step', gradient: 4, image: null },
+        ];
+
+        function buildSlides() {
+            const container = document.getElementById('slidesContainer');
+            container.innerHTML = '';
+            SLIDES.forEach((slide, i) => {
+                const card = document.createElement('div');
+                card.className = 'slide-card';
+                card.innerHTML = `
+                <div class="slide-number">SLIDE ${i + 1} of ${SLIDES.length}</div>
+                <div class="slide-preview" id="preview-${i}">
+                    <canvas id="canvas-${i}" width="${CANVAS_W}" height="${CANVAS_H}"></canvas>
+                </div>
+                <div class="slide-controls">
+                    <div>
+                        <label>Headline</label>
+                        <input type="text" value="${slide.headline}" oninput="updateSlide(${i}, 'headline', this.value)">
+                    </div>
+                    <div>
+                        <label>Subtitle</label>
+                        <textarea oninput="updateSlide(${i}, 'subtitle', this.value)">${slide.subtitle}</textarea>
+                    </div>
+                    <div>
+                        <label>Background</label>
+                        <div class="color-row">
+                            ${GRADIENTS.map((g, gi) => `<div class="color-swatch ${gi === slide.gradient ? 'active' : ''}" style="background:linear-gradient(135deg,${g.colors[0]},${g.colors[1]})" onclick="setGradient(${i},${gi})" title="${g.name}"></div>`).join('')}
+                        </div>
+                    </div>
+                    <div>
+                        <label>App Screenshot</label>
+                        <input type="file" id="file-${i}" accept="image/*" onchange="handleUpload(${i}, this)" hidden>
+                        <button class="upload-btn ${slide.image ? 'has-image' : ''}" id="upload-btn-${i}" onclick="document.getElementById('file-${i}').click()">
+                            ${slide.image ? '✓ Screenshot loaded — click to change' : '+ Upload screenshot'}
+                        </button>
+                    </div>
+                    <button class="download-single" onclick="downloadSlide(${i})">⬇ Download Slide ${i + 1}</button>
+                </div>
+            `;
+                container.appendChild(card);
+                renderSlide(i);
+            });
+        }
+
+        function renderSlide(i) {
+            const canvas = document.getElementById(`canvas-${i}`);
+            const ctx = canvas.getContext('2d');
+            const slide = SLIDES[i];
+            const g = GRADIENTS[slide.gradient];
+
+            // Background gradient
+            const grad = ctx.createLinearGradient(0, 0, CANVAS_W, CANVAS_H);
+            grad.addColorStop(0, g.colors[0]);
+            grad.addColorStop(1, g.colors[1]);
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+
+            // Headline
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.font = '900 110px Inter, -apple-system, sans-serif';
+            wrapText(ctx, slide.headline, CANVAS_W / 2, 340, CANVAS_W - 160, 130);
+
+            // Subtitle
+            ctx.font = '500 56px Inter, -apple-system, sans-serif';
+            ctx.fillStyle = 'rgba(255,255,255,0.75)';
+            const headlineLines = getLines(ctx, slide.headline, CANVAS_W - 160, '900 110px Inter');
+            const subtitleY = 340 + headlineLines * 130 + 40;
+            ctx.fillText(slide.subtitle, CANVAS_W / 2, subtitleY);
+
+            // Phone frame
+            const phoneW = 680;
+            const phoneH = 1400;
+            const phoneX = (CANVAS_W - phoneW) / 2;
+            const phoneY = CANVAS_H - phoneH - 180;
+            const phoneR = 60;
+
+            // Phone shadow
+            ctx.shadowColor = 'rgba(0,0,0,0.4)';
+            ctx.shadowBlur = 80;
+            ctx.shadowOffsetY = 20;
+
+            // Phone outer body (black)
+            ctx.fillStyle = '#1a1a1a';
+            roundRect(ctx, phoneX - 16, phoneY - 16, phoneW + 32, phoneH + 32, phoneR + 8);
+            ctx.fill();
+            ctx.shadowColor = 'transparent';
+
+            // Phone bezel highlight
+            ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+            ctx.lineWidth = 2;
+            roundRect(ctx, phoneX - 16, phoneY - 16, phoneW + 32, phoneH + 32, phoneR + 8);
+            ctx.stroke();
+
+            // Phone screen area
+            ctx.fillStyle = '#000';
+            roundRect(ctx, phoneX, phoneY, phoneW, phoneH, phoneR);
+            ctx.fill();
+
+            // Dynamic Island
+            const diW = 200;
+            const diH = 48;
+            ctx.fillStyle = '#000';
+            roundRect(ctx, (CANVAS_W - diW) / 2, phoneY + 22, diW, diH, 24);
+            ctx.fill();
+
+            // App screenshot inside phone
+            if (slide.image) {
+                ctx.save();
+                roundRect(ctx, phoneX + 4, phoneY + 4, phoneW - 8, phoneH - 8, phoneR - 2);
+                ctx.clip();
+                const img = slide.image;
+                const imgRatio = img.width / img.height;
+                const frameRatio = (phoneW - 8) / (phoneH - 8);
+                let drawW, drawH, drawX, drawY;
+                if (imgRatio > frameRatio) {
+                    drawH = phoneH - 8;
+                    drawW = drawH * imgRatio;
+                    drawX = phoneX + 4 + ((phoneW - 8) - drawW) / 2;
+                    drawY = phoneY + 4;
+                } else {
+                    drawW = phoneW - 8;
+                    drawH = drawW / imgRatio;
+                    drawX = phoneX + 4;
+                    drawY = phoneY + 4;
+                }
+                ctx.drawImage(img, drawX, drawY, drawW, drawH);
+                ctx.restore();
+            } else {
+                // Placeholder text
+                ctx.fillStyle = 'rgba(255,255,255,0.15)';
+                ctx.font = '600 48px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText('Upload', CANVAS_W / 2, phoneY + phoneH / 2 - 20);
+                ctx.fillText('Screenshot', CANVAS_W / 2, phoneY + phoneH / 2 + 40);
+            }
+
+            // Side buttons (right side - power)
+            ctx.fillStyle = '#2a2a2a';
+            roundRect(ctx, phoneX + phoneW + 14, phoneY + 320, 6, 120, 3);
+            ctx.fill();
+
+            // Side buttons (left side - volume)
+            roundRect(ctx, phoneX - 22, phoneY + 280, 6, 80, 3);
+            ctx.fill();
+            roundRect(ctx, phoneX - 22, phoneY + 380, 6, 80, 3);
+            ctx.fill();
+        }
+
+        function getLines(ctx, text, maxW, font) {
+            ctx.font = font;
+            const words = text.split(' ');
+            let line = '';
+            let lines = 1;
+            for (const word of words) {
+                const test = line + word + ' ';
+                if (ctx.measureText(test).width > maxW && line !== '') {
+                    line = word + ' ';
+                    lines++;
+                } else {
+                    line = test;
+                }
+            }
+            return lines;
+        }
+
+        function wrapText(ctx, text, x, y, maxW, lineH) {
+            const words = text.split(' ');
+            let line = '';
+            let curY = y;
+            for (const word of words) {
+                const test = line + word + ' ';
+                if (ctx.measureText(test).width > maxW && line !== '') {
+                    ctx.fillText(line.trim(), x, curY);
+                    line = word + ' ';
+                    curY += lineH;
+                } else {
+                    line = test;
+                }
+            }
+            ctx.fillText(line.trim(), x, curY);
+        }
+
+        function roundRect(ctx, x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+        }
+
+        function updateSlide(i, key, value) {
+            SLIDES[i][key] = value;
+            renderSlide(i);
+        }
+
+        function setGradient(i, gi) {
+            SLIDES[i].gradient = gi;
+            renderSlide(i);
+            buildSlides(); // refresh swatches
+        }
+
+        function handleUpload(i, input) {
+            const file = input.files[0];
+            if (!file) return;
+            const img = new Image();
+            img.onload = () => {
+                SLIDES[i].image = img;
+                renderSlide(i);
+                const btn = document.getElementById(`upload-btn-${i}`);
+                btn.className = 'upload-btn has-image';
+                btn.textContent = '✓ Screenshot loaded — click to change';
+                document.getElementById('statusBar').textContent = `Screenshot uploaded for Slide ${i + 1}`;
+            };
+            img.src = URL.createObjectURL(file);
+        }
+
+        function downloadSlide(i) {
+            const canvas = document.getElementById(`canvas-${i}`);
+            const link = document.createElement('a');
+            link.download = `PhoneTransfer_Screenshot_${i + 1}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            document.getElementById('statusBar').textContent = `Downloaded Slide ${i + 1}`;
+        }
+
+        function downloadAll() {
+            SLIDES.forEach((_, i) => {
+                setTimeout(() => downloadSlide(i), i * 500);
+            });
+            document.getElementById('statusBar').textContent = 'Downloading all slides...';
+        }
+
+        function resetAll() {
+            SLIDES.forEach(s => s.image = null);
+            SLIDES[0].headline = 'Switch Phones in Minutes';
+            SLIDES[1].headline = 'Every Carrier. Every Direction.';
+            SLIDES[2].headline = 'Your Data Stays Private';
+            SLIDES[3].headline = 'Step-by-Step Guide';
+            SLIDES[4].headline = 'Port Your Number Stress-Free';
+            buildSlides();
+            document.getElementById('statusBar').textContent = 'Reset all slides.';
+        }
+
+        // Auto-load dark mode screenshots from the server
+        async function autoLoadScreenshots() {
+            const urls = [
+                'screenshots/dark1.png',
+                'screenshots/dark2.png',
+                'screenshots/dark3.png',
+                'screenshots/dark4.png',
+                'screenshots/dark5.png',
+            ];
+            for (let i = 0; i < urls.length; i++) {
+                try {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = () => {
+                        SLIDES[i].image = img;
+                        renderSlide(i);
+                        const btn = document.getElementById(`upload-btn-${i}`);
+                        if (btn) {
+                            btn.className = 'upload-btn has-image';
+                            btn.textContent = '✓ Auto-loaded — click to change';
+                        }
+                    };
+                    img.src = urls[i];
+                } catch (e) { /* ignore */ }
+            }
+            document.getElementById('statusBar').textContent = 'Auto-loaded app screenshots — customize and download!';
+        }
+
+        // Init
+        buildSlides();
+        autoLoadScreenshots();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "Phone Transfer App",
+    "slug": "phone-transfer-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./icon.png",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "app.phonetransfer.PhoneTransfer",
+      "buildNumber": "1",
+      "usesAppleSignIn": true,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "scheme": "phonetransfer",
+    "owner": "bts-innovations-llc",
+    "extra": {
+      "eas": {
+        "projectId": "358b7e69-dbbc-4ea9-8fba-f43dea94521e"
+      }
+    }
+  }
+}

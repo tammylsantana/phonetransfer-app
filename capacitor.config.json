@@ -1,6 +1,6 @@
 {
-    "appId": "app.phonetransfer",
-    "appName": "PhoneTransfer",
+    "appId": "app.phonetransfer.PhoneTransfer",
+    "appName": "Phone Transfer App",
     "webDir": "www",
     "server": {
         "androidScheme": "https"
