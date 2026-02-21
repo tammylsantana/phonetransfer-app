@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>PhoneTransfer — Switch Phones & Carriers</title>
+    <meta name="description"
+        content="Easy step-by-step guide to transfer your apps, data, and carrier service between Android and iPhone.">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- ===== ONBOARDING ===== -->
+    <div id="onboardingScreen" class="onboarding-screen">
+        <button class="ob-skip" id="obSkip">Skip</button>
+        <div class="ob-slides-wrapper">
+            <div class="ob-slides-track" id="obTrack">
+
+                <!-- Slide 1 -->
+                <div class="ob-slide" data-slide="0">
+                    <div class="ob-visual ob-visual-1">
+                        <div class="ob-phone ob-phone-left">
+                            <svg width="80" height="140" viewBox="0 0 80 140" fill="none">
+                                <rect x="4" y="4" width="72" height="132" rx="16" stroke="url(#obG1)"
+                                    stroke-width="3" />
+                                <rect x="12" y="20" width="56" height="90" rx="4" fill="url(#obG1)" opacity="0.08" />
+                                <circle cx="40" cy="126" r="6" stroke="url(#obG1)" stroke-width="2" />
+                                <defs>
+                                    <linearGradient id="obG1" x1="0" y1="0" x2="80" y2="140">
+                                        <stop stop-color="#3DDC84" />
+                                        <stop offset="1" stop-color="#00BFA5" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="ob-data-dots">
+                                <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
+                                <span style="--i:3"></span><span style="--i:4"></span>
+                            </div>
+                        </div>
+                        <div class="ob-transfer-arrow">
+                            <svg width="60" height="24" viewBox="0 0 60 24" fill="none">
+                                <path d="M0 12h52M44 4l8 8-8 8" stroke="url(#obArrow)" stroke-width="3"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <defs>
+                                    <linearGradient id="obArrow" x1="0" y1="12" x2="60" y2="12">
+                                        <stop stop-color="#007AFF" />
+                                        <stop offset="1" stop-color="#34C759" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div class="ob-phone ob-phone-right">
+                            <svg width="80" height="140" viewBox="0 0 80 140" fill="none">
+                                <rect x="4" y="4" width="72" height="132" rx="16" stroke="url(#obG2)"
+                                    stroke-width="3" />
+                                <rect x="12" y="20" width="56" height="90" rx="4" fill="url(#obG2)" opacity="0.08" />
+                                <rect x="28" y="8" width="24" height="6" rx="3" fill="url(#obG2)" opacity="0.3" />
+                                <defs>
+                                    <linearGradient id="obG2" x1="0" y1="0" x2="80" y2="140">
+                                        <stop stop-color="#007AFF" />
+                                        <stop offset="1" stop-color="#5856D6" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+                    <h2 class="ob-title">Switch in Minutes,<br>Not Hours</h2>
+                    <p class="ob-desc">Transfer your photos, contacts, messages, and apps between Android and iPhone
+                        with a simple step-by-step guide.</p>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="ob-slide" data-slide="1">
+                    <div class="ob-visual ob-visual-2">
+                        <div class="ob-carrier-showcase">
+                            <div class="ob-carrier-bubble" style="--color:#E20074; --delay:0s;">T-Mobile</div>
+                            <div class="ob-carrier-bubble" style="--color:#009FDB; --delay:0.1s;">AT&T</div>
+                            <div class="ob-carrier-bubble" style="--color:#EE0000; --delay:0.2s;">Verizon</div>
+                            <div class="ob-carrier-bubble" style="--color:#00B140; --delay:0.3s;">Mint</div>
+                            <div class="ob-carrier-bubble" style="--color:#4285F4; --delay:0.4s;">Google Fi</div>
+                            <div class="ob-carrier-bubble" style="--color:#46196E; --delay:0.5s;">Metro</div>
+                            <div class="ob-carrier-bubble" style="--color:#F26522; --delay:0.6s;">Boost</div>
+                            <div class="ob-carrier-bubble" style="--color:#0D2240; --delay:0.7s;">US Cell</div>
+                        </div>
+                        <div class="ob-direction-badges">
+                            <span class="ob-dir-badge ob-dir-a2i">Android &rarr; iPhone</span>
+                            <span class="ob-dir-badge ob-dir-i2a">iPhone &rarr; Android</span>
+                        </div>
+                    </div>
+                    <h2 class="ob-title">Every Carrier.<br>Every Direction.</h2>
+                    <p class="ob-desc">Support for 12+ carriers with specific porting instructions. Switch from any
+                        phone to any phone.</p>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="ob-slide" data-slide="2">
+                    <div class="ob-visual ob-visual-3">
+                        <div class="ob-shield">
+                            <svg width="100" height="120" viewBox="0 0 100 120" fill="none">
+                                <path d="M50 8L10 28v32c0 28 17 48 40 52 23-4 40-24 40-52V28L50 8z"
+                                    stroke="url(#shieldG)" stroke-width="3" fill="url(#shieldG)" fill-opacity="0.06" />
+                                <path class="ob-shield-check" d="M32 58l14 14 22-28" stroke="url(#shieldG)"
+                                    stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                                <defs>
+                                    <linearGradient id="shieldG" x1="10" y1="8" x2="90" y2="112">
+                                        <stop stop-color="#34C759" />
+                                        <stop offset="1" stop-color="#30D158" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="ob-shield-ring"></div>
+                        </div>
+                        <div class="ob-security-pills">
+                            <span class="ob-pill" style="--delay:0.2s;">Encrypted</span>
+                            <span class="ob-pill" style="--delay:0.4s;">No Cloud</span>
+                            <span class="ob-pill" style="--delay:0.6s;">On-Device</span>
+                        </div>
+                    </div>
+                    <h2 class="ob-title">Your Data,<br>Safe & Sound</h2>
+                    <p class="ob-desc">Everything transfers directly between your phones. Your data never touches our
+                        servers.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="ob-pagination">
+            <div class="ob-dots">
+                <span class="ob-dot active" data-dot="0"></span>
+                <span class="ob-dot" data-dot="1"></span>
+                <span class="ob-dot" data-dot="2"></span>
+            </div>
+            <button class="ob-next-btn" id="obNextBtn">
+                Next
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== PAYWALL ===== -->
+    <div id="paywallScreen" class="paywall-screen hidden">
+        <div class="pw-container">
+            <div class="pw-hero">
+                <div class="pw-icon">
+                    <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+                        <circle cx="28" cy="28" r="26" stroke="url(#pwG)" stroke-width="2.5" />
+                        <path d="M20 28l6 6 10-12" stroke="url(#pwG)" stroke-width="3" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <defs>
+                            <linearGradient id="pwG" x1="2" y1="2" x2="54" y2="54">
+                                <stop stop-color="#007AFF" />
+                                <stop offset="0.5" stop-color="#5856D6" />
+                                <stop offset="1" stop-color="#AF52DE" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h2 class="pw-title">Unlock PhoneTransfer<br><span class="pw-gradient-text">Pro</span></h2>
+                <p class="pw-subtitle">The complete phone transfer toolkit</p>
+            </div>
+
+            <!-- Features -->
+            <div class="pw-features">
+                <div class="pw-feature"><svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="9" fill="#34C759" opacity="0.15" />
+                        <path d="M6 10l3 3 5-6" stroke="#34C759" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg><span>Step-by-step transfer wizard</span></div>
+                <div class="pw-feature"><svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="9" fill="#34C759" opacity="0.15" />
+                        <path d="M6 10l3 3 5-6" stroke="#34C759" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg><span>12+ carrier porting guides</span></div>
+                <div class="pw-feature"><svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="9" fill="#34C759" opacity="0.15" />
+                        <path d="M6 10l3 3 5-6" stroke="#34C759" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg><span>Android &harr; iPhone (both ways)</span></div>
+                <div class="pw-feature"><svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="9" fill="#34C759" opacity="0.15" />
+                        <path d="M6 10l3 3 5-6" stroke="#34C759" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg><span>Troubleshooting & live help</span></div>
+                <div class="pw-feature"><svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="9" fill="#34C759" opacity="0.15" />
+                        <path d="M6 10l3 3 5-6" stroke="#34C759" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg><span>Progress tracking & resume</span></div>
+            </div>
+
+            <!-- Pricing -->
+            <div class="pw-price-hero">
+                <div class="pw-price-amount">$4.99</div>
+                <div class="pw-price-label">One-time purchase</div>
+                <div class="pw-price-note">Pay once, use forever. No subscriptions.</div>
+            </div>
+
+            <!-- CTA -->
+            <button class="pw-cta" id="pwSubscribeBtn">Unlock for $4.99</button>
+            <button class="pw-restore" id="pwRestoreBtn">Restore Purchase</button>
+            <p class="pw-legal">One-time purchase. No recurring charges.</p>
+        </div>
+    </div>
+
+    <!-- ===== MAIN APP ===== -->
+    <div class="app-container hidden" id="mainApp">
+        <!-- Theme Toggle -->
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+            <svg class="icon-sun" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <circle cx="9" cy="9" r="4" stroke="currentColor" stroke-width="1.5" />
+                <path d="M9 1v2M9 15v2M1 9h2M15 9h2M3.3 3.3l1.4 1.4M13.3 13.3l1.4 1.4M3.3 14.7l1.4-1.4M13.3 4.7l1.4-1.4"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+            <svg class="icon-moon" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M15.1 10.4A6.5 6.5 0 017.6 2.9 7 7 0 1015.1 10.4z" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </button>
+
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg class="logo-phone" width="20" height="32" viewBox="0 0 20 32" fill="none">
+                        <rect x="1" y="1" width="18" height="30" rx="4" stroke="currentColor" stroke-width="2" />
+                        <line x1="7" y1="27" x2="13" y2="27" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" />
+                    </svg>
+                    <svg class="logo-arrow-icon" width="24" height="14" viewBox="0 0 24 14" fill="none">
+                        <path d="M0 7h20M14 1l6 6-6 6" stroke="url(#arrowGrad)" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <defs>
+                            <linearGradient id="arrowGrad" x1="0" y1="7" x2="24" y2="7">
+                                <stop stop-color="#007AFF" />
+                                <stop offset="1" stop-color="#34C759" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <svg class="logo-phone" width="20" height="32" viewBox="0 0 20 32" fill="none">
+                        <rect x="1" y="1" width="18" height="30" rx="4" stroke="currentColor" stroke-width="2" />
+                        <path d="M6 3h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <h1>PhoneTransfer</h1>
+                <p class="tagline">Switch phones, stress-free</p>
+            </div>
+        </header>
+
+        <!-- ===== SETUP SCREEN ===== -->
+        <div id="setupScreen" class="setup-screen">
+            <div class="step-card">
+                <div class="step-icon-large">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                        <circle cx="24" cy="24" r="22" stroke="url(#setupGrad)" stroke-width="2.5" />
+                        <path d="M20 16l12 8-12 8V16z" fill="url(#setupGrad)" />
+                        <defs>
+                            <linearGradient id="setupGrad" x1="2" y1="2" x2="46" y2="46">
+                                <stop stop-color="#007AFF" />
+                                <stop offset="1" stop-color="#5856D6" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h2>Let's Get Started</h2>
+                <p class="step-subtitle">Tell us about your switch so we can guide you through it.</p>
+
+                <!-- Direction -->
+                <div class="setup-section">
+                    <h3>Which direction?</h3>
+                    <div class="direction-selector">
+                        <div class="direction-option" data-direction="android-to-iphone" id="dirAndroidToIphone">
+                            <span class="dir-label">Android to iPhone</span>
+                            <span class="dir-sub">Moving to iOS</span>
+                        </div>
+                        <div class="direction-option" data-direction="iphone-to-android" id="dirIphoneToAndroid">
+                            <span class="dir-label">iPhone to Android</span>
+                            <span class="dir-sub">Moving to Android</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- From Carrier -->
+                <div class="setup-section">
+                    <h3>Switching from</h3>
+                    <div class="carrier-grid" id="fromCarrierGrid">
+                        <div class="carrier-option" data-carrier="T-Mobile"><span
+                                style="color:#E20074;font-weight:700;">T-Mobile</span></div>
+                        <div class="carrier-option" data-carrier="AT&T"><span
+                                style="color:#009FDB;font-weight:700;">AT&T</span></div>
+                        <div class="carrier-option" data-carrier="Verizon"><span
+                                style="color:#EE0000;font-weight:700;">Verizon</span></div>
+                        <div class="carrier-option" data-carrier="US Cellular"><span
+                                style="color:#0D2240;font-weight:700;">US Cellular</span></div>
+                        <div class="carrier-option" data-carrier="Mint Mobile"><span
+                                style="color:#00B140;font-weight:700;">Mint Mobile</span></div>
+                        <div class="carrier-option" data-carrier="Cricket"><span
+                                style="color:#6CC24A;font-weight:700;">Cricket</span></div>
+                        <div class="carrier-option" data-carrier="Metro by T-Mobile"><span
+                                style="color:#46196E;font-weight:700;">Metro</span></div>
+                        <div class="carrier-option" data-carrier="Boost Mobile"><span
+                                style="color:#F26522;font-weight:700;">Boost</span></div>
+                        <div class="carrier-option" data-carrier="Visible"><span
+                                style="color:#1B1464;font-weight:700;">Visible</span></div>
+                        <div class="carrier-option" data-carrier="Google Fi"><span
+                                style="color:#4285F4;font-weight:700;">Google Fi</span></div>
+                        <div class="carrier-option" data-carrier="Xfinity Mobile"><span
+                                style="color:#E00000;font-weight:700;">Xfinity</span></div>
+                        <div class="carrier-option" data-carrier="Spectrum Mobile"><span
+                                style="color:#0078D4;font-weight:700;">Spectrum</span></div>
+                        <div class="carrier-option" data-carrier="Same Carrier" style="grid-column: span 2;"><span
+                                style="color:#8E8E93;font-weight:600;">Keeping my carrier / Not switching</span></div>
+                    </div>
+                </div>
+
+                <!-- To Carrier -->
+                <div class="setup-section">
+                    <h3>Switching to</h3>
+                    <div class="carrier-grid" id="toCarrierGrid">
+                        <div class="carrier-option" data-carrier="T-Mobile"><span
+                                style="color:#E20074;font-weight:700;">T-Mobile</span></div>
+                        <div class="carrier-option" data-carrier="AT&T"><span
+                                style="color:#009FDB;font-weight:700;">AT&T</span></div>
+                        <div class="carrier-option" data-carrier="Verizon"><span
+                                style="color:#EE0000;font-weight:700;">Verizon</span></div>
+                        <div class="carrier-option" data-carrier="US Cellular"><span
+                                style="color:#0D2240;font-weight:700;">US Cellular</span></div>
+                        <div class="carrier-option" data-carrier="Mint Mobile"><span
+                                style="color:#00B140;font-weight:700;">Mint Mobile</span></div>
+                        <div class="carrier-option" data-carrier="Cricket"><span
+                                style="color:#6CC24A;font-weight:700;">Cricket</span></div>
+                        <div class="carrier-option" data-carrier="Metro by T-Mobile"><span
+                                style="color:#46196E;font-weight:700;">Metro</span></div>
+                        <div class="carrier-option" data-carrier="Boost Mobile"><span
+                                style="color:#F26522;font-weight:700;">Boost</span></div>
+                        <div class="carrier-option" data-carrier="Visible"><span
+                                style="color:#1B1464;font-weight:700;">Visible</span></div>
+                        <div class="carrier-option" data-carrier="Google Fi"><span
+                                style="color:#4285F4;font-weight:700;">Google Fi</span></div>
+                        <div class="carrier-option" data-carrier="Xfinity Mobile"><span
+                                style="color:#E00000;font-weight:700;">Xfinity</span></div>
+                        <div class="carrier-option" data-carrier="Spectrum Mobile"><span
+                                style="color:#0078D4;font-weight:700;">Spectrum</span></div>
+                        <div class="carrier-option" data-carrier="Same Carrier" style="grid-column: span 2;"><span
+                                style="color:#8E8E93;font-weight:600;">Keeping my carrier / Not switching</span></div>
+                    </div>
+                </div>
+
+                <button class="btn btn-begin" id="beginBtn" disabled>Continue</button>
+            </div>
+        </div>
+
+        <!-- ===== MAIN WIZARD (hidden initially) ===== -->
+        <div id="wizardScreen" class="hidden">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="progressPercent">0%</span>
+                    <span id="progressLabel">Getting Started</span>
+                </div>
+            </div>
+            <div class="step-indicators" id="stepIndicators"></div>
+            <div class="steps-wrapper">
+                <div class="steps-track" id="stepsTrack"></div>
+            </div>
+        </div>
+
+        <!-- Navigation (hidden initially) -->
+        <nav class="step-nav hidden" id="stepNav">
+            <button class="btn btn-back" id="backBtn" disabled>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                Back
+            </button>
+            <button class="btn btn-next" id="nextBtn">
+                Continue
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </button>
+        </nav>
+    </div>
+
+    <script>
+        // Theme toggle — runs before app.js to avoid flash
+        (function () {
+            const toggle = document.getElementById('themeToggle');
+            const KEY = 'phonetransfer_theme';
+            function getPreferred() {
+                try { return localStorage.getItem(KEY); } catch (e) { return null; }
+            }
+            function applyTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                try { localStorage.setItem(KEY, theme); } catch (e) { }
+            }
+            const saved = getPreferred();
+            if (saved) {
+                applyTheme(saved);
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                applyTheme('dark');
+            }
+            toggle.addEventListener('click', function () {
+                const current = document.documentElement.getAttribute('data-theme');
+                applyTheme(current === 'dark' ? 'light' : 'dark');
+            });
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+                if (!getPreferred()) applyTheme(e.matches ? 'dark' : 'light');
+            });
+        })();
+    </script>
+    <script src="app.js"></script>
+</body>
+
+</html>
