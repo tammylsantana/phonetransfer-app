@@ -1,0 +1,12 @@
+{
+    "appId": "app.phonetransfer",
+    "appName": "PhoneTransfer",
+    "webDir": "www",
+    "server": {
+        "androidScheme": "https"
+    },
+    "ios": {
+        "contentInset": "always",
+        "backgroundColor": "#f2f4f7"
+    }
+}

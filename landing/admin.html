@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — PhoneTransfer</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: rgba(255, 255, 255, 0.04);
+            --bg-card-hover: rgba(255, 255, 255, 0.07);
+            --text: #f5f5f7;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --text-tertiary: rgba(255, 255, 255, 0.4);
+            --blue: #007AFF;
+            --purple: #5856D6;
+            --green: #34C759;
+            --orange: #FF9500;
+            --pink: #FF2D55;
+            --red: #FF3B30;
+            --border: rgba(255, 255, 255, 0.08);
+            --radius: 16px;
+            --radius-lg: 24px;
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Login overlay */
+        .login-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.4s, visibility 0.4s;
+        }
+
+        .login-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .login-box {
+            text-align: center;
+            max-width: 360px;
+            width: 100%;
+            padding: 0 1.5rem;
+        }
+
+        .login-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--blue), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            margin-bottom: 2rem;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 1.1rem;
+            letter-spacing: 0.3em;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+            -webkit-text-security: disc;
+        }
+
+        .login-input:focus {
+            border-color: var(--blue);
+        }
+
+        .login-input.error {
+            border-color: var(--red);
+            animation: shake 0.4s;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-8px);
+            }
+
+            75% {
+                transform: translateX(8px);
+            }
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.9rem;
+            margin-top: 1rem;
+            background: linear-gradient(135deg, var(--blue), var(--purple));
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-family: var(--font);
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dashboard.visible {
+            display: block;
+        }
+
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dash-brand {
+            font-size: 1.3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--blue), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .dash-tag {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.25rem 0.7rem;
+            background: rgba(52, 199, 89, 0.15);
+            color: var(--green);
+            border-radius: 100px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .dash-logout {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-tertiary);
+            padding: 0.45rem 1rem;
+            border-radius: 8px;
+            font-family: var(--font);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .dash-logout:hover {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        /* Stats row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+        }
+
+        .stat-card:nth-child(1)::before {
+            background: linear-gradient(90deg, var(--blue), var(--purple));
+        }
+
+        .stat-card:nth-child(2)::before {
+            background: var(--green);
+        }
+
+        .stat-card:nth-child(3)::before {
+            background: var(--orange);
+        }
+
+        .stat-card:nth-child(4)::before {
+            background: var(--pink);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .stat-note {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            margin-top: 0.25rem;
+        }
+
+        /* Sections */
+        .dash-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title svg {
+            opacity: 0.6;
+        }
+
+        /* Document cards */
+        .doc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .doc-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: background 0.2s, transform 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .doc-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+
+        .doc-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .doc-info h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .doc-info p {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+        }
+
+        .doc-status {
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 100px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+
+        .doc-status.live {
+            background: rgba(52, 199, 89, 0.15);
+            color: var(--green);
+        }
+
+        .doc-status.pending {
+            background: rgba(255, 149, 0, 0.15);
+            color: var(--orange);
+        }
+
+        .doc-status.draft {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-tertiary);
+        }
+
+        /* Assets */
+        .asset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .asset-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            text-align: center;
+            transition: background 0.2s;
+        }
+
+        .asset-card:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .asset-preview {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .asset-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .asset-meta {
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
+        }
+
+        /* Services table */
+        .services-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .services-table th {
+            text-align: left;
+            padding: 0.9rem 1.25rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-tertiary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .services-table td {
+            padding: 0.9rem 1.25rem;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .services-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .services-table .svc-name {
+            font-weight: 600;
+        }
+
+        .services-table .svc-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .svc-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .svc-dot.active {
+            background: var(--green);
+        }
+
+        .svc-dot.pending {
+            background: var(--orange);
+        }
+
+        .svc-dot.inactive {
+            background: var(--red);
+        }
+
+        .svc-link {
+            color: var(--blue);
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+
+        .svc-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Quick links */
+        .quick-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .quick-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .quick-link:hover {
+            background: var(--bg-card-hover);
+            color: var(--text);
+        }
+
+        /* Activity log */
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            align-items: flex-start;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 0.5rem;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            font-size: 0.85rem;
+        }
+
+        .activity-time {
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
+            margin-top: 0.15rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .dashboard {
+                padding: 1rem;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .doc-grid,
+            .asset-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .services-table {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Login Screen -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <div class="login-logo">PhoneTransfer</div>
+            <p class="login-subtitle">Admin Dashboard</p>
+            <input type="password" class="login-input" id="codeInput" placeholder="Enter access code" maxlength="8"
+                autofocus>
+            <button class="login-btn" id="loginBtn" onclick="attemptLogin()">Sign In</button>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <div class="dash-header">
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+                <span class="dash-brand">PhoneTransfer</span>
+                <span class="dash-tag">Admin</span>
+            </div>
+            <button class="dash-logout" onclick="logout()">Sign Out</button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">App Status</div>
+                <div class="stat-value" style="color:var(--orange);font-size:1.3rem;">Pre-Launch</div>
+                <div class="stat-note">Not yet submitted to App Store</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Revenue</div>
+                <div class="stat-value" style="color:var(--green);">$0</div>
+                <div class="stat-note">RevenueCat connected</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Downloads</div>
+                <div class="stat-value">0</div>
+                <div class="stat-note">Waiting for launch</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Price</div>
+                <div class="stat-value" style="color:var(--blue);">$4.99</div>
+                <div class="stat-note">One-time purchase</div>
+            </div>
+        </div>
+
+        <!-- Documents / Paperwork -->
+        <div class="dash-section">
+            <div class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path>
+                    <polyline points="14,2 14,8 20,8"></polyline>
+                </svg>
+                Paperwork & Legal
+            </div>
+            <div class="doc-grid">
+                <a href="privacy.html" target="_blank" class="doc-card">
+                    <div class="doc-icon" style="background:rgba(0,122,255,0.1);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#007AFF" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0110 0v4"></path>
+                        </svg>
+                    </div>
+                    <div class="doc-info">
+                        <h4>Privacy Policy</h4>
+                        <p>No data collection, on-device only, Apple payments</p>
+                        <span class="doc-status live">Live</span>
+                    </div>
+                </a>
+                <a href="terms.html" target="_blank" class="doc-card">
+                    <div class="doc-icon" style="background:rgba(88,86,214,0.1);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5856D6" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path>
+                            <polyline points="14,2 14,8 20,8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                        </svg>
+                    </div>
+                    <div class="doc-info">
+                        <h4>Terms of Service</h4>
+                        <p>License, disclaimer, liability, IP rights</p>
+                        <span class="doc-status live">Live</span>
+                    </div>
+                </a>
+                <a href="support.html" target="_blank" class="doc-card">
+                    <div class="doc-icon" style="background:rgba(52,199,89,0.1);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34C759" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                    <div class="doc-info">
+                        <h4>Support Page</h4>
+                        <p>Contact info, FAQ, troubleshooting, refunds</p>
+                        <span class="doc-status live">Live</span>
+                    </div>
+                </a>
+                <a href="index.html" target="_blank" class="doc-card">
+                    <div class="doc-icon" style="background:rgba(255,149,0,0.1);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF9500" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path
+                                d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="doc-info">
+                        <h4>Landing Page</h4>
+                        <p>phonetransfer.app — main marketing site</p>
+                        <span class="doc-status live">Live</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Assets -->
+        <div class="dash-section">
+            <div class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21,15 16,10 5,21"></polyline>
+                </svg>
+                Brand Assets
+            </div>
+            <div class="asset-grid">
+                <div class="asset-card">
+                    <div class="asset-preview"
+                        style="background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:18px;">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="4" width="7" height="16" rx="2" stroke="#fff" stroke-width="1.5" />
+                            <rect x="14" y="4" width="7" height="16" rx="2" stroke="#fff" stroke-width="1.5" />
+                            <path d="M10 10h4M10 12h4M10 14h4" stroke="#fff" stroke-width="1" stroke-dasharray="2 2" />
+                        </svg>
+                    </div>
+                    <div class="asset-name">App Icon</div>
+                    <div class="asset-meta">1024×1024 · iOS</div>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-preview" style="background:var(--bg);border:1px solid var(--border);">
+                        <span
+                            style="font-size:0.9rem;font-weight:800;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">PT</span>
+                    </div>
+                    <div class="asset-name">Wordmark</div>
+                    <div class="asset-meta">PhoneTransfer</div>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-preview"
+                        style="background:linear-gradient(135deg,rgba(0,122,255,0.2),rgba(88,86,214,0.2));">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                            <rect x="2" y="3" width="20" height="14" rx="2" stroke="var(--blue)" stroke-width="1.5" />
+                            <line x1="8" y1="21" x2="16" y2="21" stroke="var(--blue)" stroke-width="1.5" />
+                            <line x1="12" y1="17" x2="12" y2="21" stroke="var(--blue)" stroke-width="1.5" />
+                        </svg>
+                    </div>
+                    <div class="asset-name">Screenshots</div>
+                    <div class="asset-meta">iPhone 15 Pro · 6.7"</div>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-preview" style="background:rgba(52,199,89,0.1);">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="var(--green)" stroke-width="1.5" />
+                            <path d="M2 17l10 5 10-5" stroke="var(--green)" stroke-width="1.5" />
+                            <path d="M2 12l10 5 10-5" stroke="var(--green)" stroke-width="1.5" />
+                        </svg>
+                    </div>
+                    <div class="asset-name">Color Palette</div>
+                    <div class="asset-meta">Blue · Purple · Green</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services & Integrations -->
+        <div class="dash-section">
+            <div class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
+                </svg>
+                Services & Analytics
+            </div>
+            <table class="services-table">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Status</th>
+                        <th>Account</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="svc-name">Apple App Store Connect</td>
+                        <td>
+                            <span class="svc-status"><span class="svc-dot active"></span> Connected</span>
+                        </td>
+                        <td style="color:var(--text-tertiary);">tammylsantana@gmail.com</td>
+                        <td><a class="svc-link" href="https://appstoreconnect.apple.com" target="_blank">Open →</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="svc-name">RevenueCat</td>
+                        <td>
+                            <span class="svc-status"><span class="svc-dot active"></span> Connected</span>
+                        </td>
+                        <td style="color:var(--text-tertiary);">PhoneTransfer project</td>
+                        <td><a class="svc-link" href="https://app.revenuecat.com" target="_blank">Open →</a></td>
+                    </tr>
+                    <tr>
+                        <td class="svc-name">Supabase</td>
+                        <td>
+                            <span class="svc-status"><span class="svc-dot pending"></span> Setup Needed</span>
+                        </td>
+                        <td style="color:var(--text-tertiary);">rweyquphulpwyvleczci</td>
+                        <td><a class="svc-link" href="https://supabase.com/dashboard/project/rweyquphulpwyvleczci"
+                                target="_blank">Open →</a></td>
+                    </tr>
+                    <tr>
+                        <td class="svc-name">Domain (phonetransfer.app)</td>
+                        <td>
+                            <span class="svc-status"><span class="svc-dot active"></span> Registered</span>
+                        </td>
+                        <td style="color:var(--text-tertiary);">phonetransfer.app</td>
+                        <td><a class="svc-link" href="https://phonetransfer.app" target="_blank">Visit →</a></td>
+                    </tr>
+                    <tr>
+                        <td class="svc-name">Vercel (Hosting)</td>
+                        <td>
+                            <span class="svc-status"><span class="svc-dot pending"></span> Not Deployed</span>
+                        </td>
+                        <td style="color:var(--text-tertiary);">—</td>
+                        <td><a class="svc-link" href="https://vercel.com" target="_blank">Setup →</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Social Media -->
+        <div class="dash-section">
+            <div class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 2h4v4M17 22h4v-4M7 2H3v4M7 22H3v-4"></path>
+                </svg>
+                Social Media Handles
+            </div>
+            <table class="services-table">
+                <thead>
+                    <tr>
+                        <th>Platform</th>
+                        <th>Handle</th>
+                        <th>Status</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="svc-name">X (Twitter)</td>
+                        <td style="color:var(--blue);">@phonetransferapp</td>
+                        <td><span class="svc-status"><span class="svc-dot active"></span> Available</span></td>
+                        <td style="color:var(--text-tertiary);font-size:0.8rem;">@phonetransfer taken (inactive since
+                            2008)</td>
+                    </tr>
+                    <tr>
+                        <td class="svc-name">Instagram</td>
+                        <td style="color:var(--blue);">@phonetransferapp</td>
+                        <td><span class="svc-status"><span class="svc-dot active"></span> Available</span></td>
+                        <td style="color:var(--text-tertiary);font-size:0.8rem;">@phonetransfer taken (0 posts, empty)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="svc-name">TikTok</td>
+                        <td style="color:var(--blue);">@phonetransferapp</td>
+                        <td><span class="svc-status"><span class="svc-dot active"></span> Available</span></td>
+                        <td style="color:var(--text-tertiary);font-size:0.8rem;">@phonetransfer taken (no content)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="dash-section">
+            <div class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"></path>
+                    <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"></path>
+                </svg>
+                Quick Links
+            </div>
+            <div class="quick-links">
+                <a href="https://appstoreconnect.apple.com" target="_blank" class="quick-link">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <polyline points="15,3 21,3 21,9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    App Store Connect
+                </a>
+                <a href="https://app.revenuecat.com" target="_blank" class="quick-link">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <polyline points="15,3 21,3 21,9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    RevenueCat
+                </a>
+                <a href="https://supabase.com/dashboard/project/rweyquphulpwyvleczci" target="_blank"
+                    class="quick-link">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <polyline points="15,3 21,3 21,9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    Supabase
+                </a>
+                <a href="https://vercel.com" target="_blank" class="quick-link">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <polyline points="15,3 21,3 21,9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    Vercel
+                </a>
+                <a href="https://developer.apple.com" target="_blank" class="quick-link">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <polyline points="15,3 21,3 21,9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    Apple Developer
+                </a>
+            </div>
+        </div>
+
+        <!-- Activity Log -->
+        <div class="dash-section">
+            <div class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12,6 12,12 16,14"></polyline>
+                </svg>
+                Activity Log
+            </div>
+            <ul class="activity-list" id="activityLog">
+                <li class="activity-item">
+                    <div class="activity-dot" style="background:var(--green);"></div>
+                    <div class="activity-content">
+                        <div class="activity-text">Domain <strong>phonetransfer.app</strong> purchased</div>
+                        <div class="activity-time">Feb 20, 2026 · 9:49 PM</div>
+                    </div>
+                </li>
+                <li class="activity-item">
+                    <div class="activity-dot" style="background:var(--blue);"></div>
+                    <div class="activity-content">
+                        <div class="activity-text">RevenueCat project <strong>PhoneTransfer</strong> created</div>
+                        <div class="activity-time">Feb 20, 2026 · 9:53 PM</div>
+                    </div>
+                </li>
+                <li class="activity-item">
+                    <div class="activity-dot" style="background:var(--purple);"></div>
+                    <div class="activity-content">
+                        <div class="activity-text">Landing page built with animated hero, neon icons</div>
+                        <div class="activity-time">Feb 20, 2026 · 9:20 PM</div>
+                    </div>
+                </li>
+                <li class="activity-item">
+                    <div class="activity-dot" style="background:var(--orange);"></div>
+                    <div class="activity-content">
+                        <div class="activity-text">Privacy, Terms, Support pages created</div>
+                        <div class="activity-time">Feb 20, 2026 · 9:18 PM</div>
+                    </div>
+                </li>
+                <li class="activity-item">
+                    <div class="activity-dot" style="background:var(--pink);"></div>
+                    <div class="activity-content">
+                        <div class="activity-text">App rebranded from SwitchEasy to <strong>PhoneTransfer</strong></div>
+                        <div class="activity-time">Feb 20, 2026 · 9:00 PM</div>
+                    </div>
+                </li>
+                <li class="activity-item">
+                    <div class="activity-dot" style="background:var(--text-tertiary);"></div>
+                    <div class="activity-content">
+                        <div class="activity-text">Trademark scan — no USPTO registration found for "PhoneTransfer"
+                        </div>
+                        <div class="activity-time">Feb 20, 2026 · 9:38 PM</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Trademark Report -->
+        <div class="dash-section">
+            <div class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path>
+                    <polyline points="16,17 21,12 16,7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                Trademark Report
+            </div>
+            <div class="doc-grid">
+                <div class="doc-card" style="cursor:default;">
+                    <div class="doc-icon" style="background:rgba(52,199,89,0.1);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34C759" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 11-5.93-9.14"></path>
+                            <polyline points="22,4 12,14.01 9,11.01"></polyline>
+                        </svg>
+                    </div>
+                    <div class="doc-info">
+                        <h4>USPTO Search</h4>
+                        <p>No registered trademark for "PhoneTransfer" — descriptive term, low risk</p>
+                        <span class="doc-status live">Clear</span>
+                    </div>
+                </div>
+                <div class="doc-card" style="cursor:default;">
+                    <div class="doc-icon" style="background:rgba(255,149,0,0.1);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF9500" stroke-width="2">
+                            <path
+                                d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z">
+                            </path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                    <div class="doc-info">
+                        <h4>Similar Products</h4>
+                        <p>iMobie "PhoneTrans" uses phonetransfer.com/.org — different name, different product</p>
+                        <span class="doc-status pending">Monitor</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CODE = '02051967';
+
+        // Check if already authenticated
+        if (sessionStorage.getItem('pt_admin') === 'true') {
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('dashboard').classList.add('visible');
+        }
+
+        // Enter key support
+        document.getElementById('codeInput').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') attemptLogin();
+            this.classList.remove('error');
+        });
+
+        function attemptLogin() {
+            const input = document.getElementById('codeInput');
+            if (input.value === CODE) {
+                sessionStorage.setItem('pt_admin', 'true');
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('dashboard').classList.add('visible');
+            } else {
+                input.classList.add('error');
+                input.value = '';
+                setTimeout(() => input.classList.remove('error'), 400);
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('pt_admin');
+            document.getElementById('loginOverlay').classList.remove('hidden');
+            document.getElementById('dashboard').classList.remove('visible');
+            document.getElementById('codeInput').value = '';
+        }
+    </script>
+</body>
+
+</html>

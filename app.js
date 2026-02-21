@@ -132,46 +132,85 @@
         if (el) el.classList.add('hidden');
     }
 
-    function handleSubscribe() {
-        /* ============================================
-           RevenueCat Integration Point
-           ============================================
-           When packaged as a native app with Capacitor:
+    async function handleSubscribe() {
+        /* RevenueCat Integration — Real SDK */
+        const isNative = window.Capacitor && window.Capacitor.isNativePlatform();
 
-           import Purchases from '@revenuecat/purchases-capacitor';
-           await Purchases.configure({ apiKey: 'YOUR_REVENUECAT_API_KEY' });
-           const offerings = await Purchases.getOfferings();
-           const pkg = offerings.current.availablePackages.find(p => p.identifier === plan);
-           const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
+        if (isNative) {
+            try {
+                const { Purchases } = await import('@revenuecat/purchases-capacitor');
+                await Purchases.configure({ apiKey: 'kyu8sn53p4' });
+                const offerings = await Purchases.getOfferings();
 
-           For now, we simulate a successful subscription.
-           ============================================ */
+                if (offerings.current && offerings.current.availablePackages.length > 0) {
+                    const pkg = offerings.current.availablePackages[0]; // lifetime package
+                    const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
 
-        localStorage.setItem(SUB_KEY, JSON.stringify({
-            plan: 'lifetime',
-            subscribedAt: new Date().toISOString(),
-            status: 'active'
-        }));
-
-        hidePaywall();
-        showMainApp();
-    }
-
-    function handleRestore() {
-        /* ============================================
-           RevenueCat Restore Point
-
-           const { customerInfo } = await Purchases.restorePurchases();
-           if (customerInfo.entitlements.active['pro']) { ... }
-           ============================================ */
-
-        // Simulate restore check
-        const existing = localStorage.getItem(SUB_KEY);
-        if (existing) {
+                    if (customerInfo.entitlements.active['pro']) {
+                        localStorage.setItem(SUB_KEY, JSON.stringify({
+                            plan: 'lifetime',
+                            subscribedAt: new Date().toISOString(),
+                            status: 'active'
+                        }));
+                        hidePaywall();
+                        showMainApp();
+                    }
+                } else {
+                    alert('No offerings available. Please try again later.');
+                }
+            } catch (e) {
+                if (e.userCancelled) {
+                    // User cancelled, do nothing
+                } else {
+                    console.error('RevenueCat purchase error:', e);
+                    alert('Purchase failed. Please try again.');
+                }
+            }
+        } else {
+            // Browser/dev mode — simulate purchase
+            localStorage.setItem(SUB_KEY, JSON.stringify({
+                plan: 'lifetime',
+                subscribedAt: new Date().toISOString(),
+                status: 'active'
+            }));
             hidePaywall();
             showMainApp();
+        }
+    }
+
+    async function handleRestore() {
+        const isNative = window.Capacitor && window.Capacitor.isNativePlatform();
+
+        if (isNative) {
+            try {
+                const { Purchases } = await import('@revenuecat/purchases-capacitor');
+                await Purchases.configure({ apiKey: 'kyu8sn53p4' });
+                const { customerInfo } = await Purchases.restorePurchases();
+
+                if (customerInfo.entitlements.active['pro']) {
+                    localStorage.setItem(SUB_KEY, JSON.stringify({
+                        plan: 'lifetime',
+                        subscribedAt: new Date().toISOString(),
+                        status: 'active'
+                    }));
+                    hidePaywall();
+                    showMainApp();
+                } else {
+                    alert('No previous purchases found.');
+                }
+            } catch (e) {
+                console.error('RevenueCat restore error:', e);
+                alert('Restore failed. Please try again.');
+            }
         } else {
-            alert('No previous purchases found. Please subscribe to continue.');
+            // Browser/dev mode
+            const existing = localStorage.getItem(SUB_KEY);
+            if (existing) {
+                hidePaywall();
+                showMainApp();
+            } else {
+                alert('No previous purchases found. Please subscribe to continue.');
+            }
         }
     }
 
