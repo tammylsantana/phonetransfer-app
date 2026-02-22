@@ -245,7 +245,13 @@
             <!-- CTA -->
             <button class="pw-cta" id="pwSubscribeBtn">Unlock for $4.99</button>
             <button class="pw-restore" id="pwRestoreBtn">Restore Purchase</button>
-            <p class="pw-legal">One-time purchase. No recurring charges.</p>
+            <p class="pw-legal">One-time purchase. No recurring charges.<br>Payment will be charged to your Apple ID
+                account at confirmation of purchase.</p>
+            <div class="pw-legal-links">
+                <a href="https://phonetransfer.app/terms" target="_blank">Terms of Use</a>
+                <span class="pw-legal-sep">|</span>
+                <a href="https://phonetransfer.app/privacy" target="_blank">Privacy Policy</a>
+            </div>
         </div>
     </div>
 
@@ -447,8 +453,8 @@
             const saved = getPreferred();
             if (saved) {
                 applyTheme(saved);
-            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                applyTheme('dark');
+            } else {
+                applyTheme('light');
             }
             toggle.addEventListener('click', function () {
                 const current = document.documentElement.getAttribute('data-theme');

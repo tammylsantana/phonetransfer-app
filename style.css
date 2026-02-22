@@ -555,6 +555,29 @@
     line-height: 1.4;
 }
 
+.pw-legal-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    font-size: 0.7rem;
+}
+
+.pw-legal-links a {
+    color: var(--apple-blue);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.pw-legal-links a:hover {
+    text-decoration: underline;
+}
+
+.pw-legal-sep {
+    color: var(--text-quaternary);
+}
+
 
 
 /* ===========================
