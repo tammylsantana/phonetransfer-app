@@ -32,10 +32,27 @@
     const SUB_KEY = 'phonetransfer_subscribed';
     const AUTH_KEY = 'phonetransfer_auth';
 
+    // ---- Stripe Payment Link (web sales) ----
+    // Replace this with your actual Stripe Payment Link URL
+    const STRIPE_PAYMENT_LINK = 'STRIPE_LINK_PLACEHOLDER';
+
     async function initFlow() {
         // Initialize Supabase auth
         if (window.PhoneTransferAuth) {
             window.PhoneTransferAuth.init();
+        }
+
+        // Check if returning from Stripe payment
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('purchased') === 'true') {
+            localStorage.setItem(SUB_KEY, JSON.stringify({
+                plan: 'lifetime',
+                subscribedAt: new Date().toISOString(),
+                status: 'active',
+                source: 'stripe'
+            }));
+            // Clean up URL
+            window.history.replaceState({}, '', window.location.pathname);
         }
 
         const onboarded = localStorage.getItem(OB_KEY);
@@ -264,14 +281,19 @@
                 }
             }
         } else {
-            // Browser/dev mode — simulate purchase
-            localStorage.setItem(SUB_KEY, JSON.stringify({
-                plan: 'lifetime',
-                subscribedAt: new Date().toISOString(),
-                status: 'active'
-            }));
-            hidePaywall();
-            showMainApp();
+            // Browser/web mode — redirect to Stripe
+            if (STRIPE_PAYMENT_LINK && STRIPE_PAYMENT_LINK !== 'STRIPE_LINK_PLACEHOLDER') {
+                window.location.href = STRIPE_PAYMENT_LINK;
+            } else {
+                // Dev fallback — simulate purchase
+                localStorage.setItem(SUB_KEY, JSON.stringify({
+                    plan: 'lifetime',
+                    subscribedAt: new Date().toISOString(),
+                    status: 'active'
+                }));
+                hidePaywall();
+                showMainApp();
+            }
         }
     }
 
