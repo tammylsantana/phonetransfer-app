@@ -10,7 +10,6 @@
       "supportsTablet": false,
       "bundleIdentifier": "app.phonetransfer.PhoneTransfer",
       "buildNumber": "1",
-      "usesAppleSignIn": true,
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
